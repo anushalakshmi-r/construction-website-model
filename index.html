@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BuildRight Construction delivers residential construction, commercial projects, and renovations with integrity and quality craftsmanship.">
+    <meta name="keywords" content="construction company, residential construction, commercial construction, home remodeling, renovations, quality craftsmanship">
+    <title>BuildRight Construction | Building Your Dreams</title>
+    <link rel="canonical" href="https://www.buildright.example/">
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" fetchpriority="high">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="BuildRight Construction home">Build<span>Right</span></a>
+      <button class="menu-toggle" type="button" aria-label="Toggle navigation" aria-controls="main-navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="site-nav" id="main-navigation" aria-label="Main navigation">
+        <a href="index.html" aria-label="Home page" aria-current="page">Home</a>
+        <a href="services.html" aria-label="Construction services">Services</a>
+        <a href="contact.html" aria-label="Contact BuildRight Construction">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <header class="hero-copy">
+          <p class="eyebrow">Built on trust. Made to last.</p>
+          <h1>Building Your Dreams</h1>
+          <p>From the first sketch to the finishing touches, we create spaces that bring your ideas to life with care, quality, and craftsmanship.</p>
+          <a class="button" href="services.html" aria-label="Explore our services">Explore our services</a>
+        </header>
+      </section>
+
+      <section class="intro content-width">
+        <p class="eyebrow">A better way to build</p>
+        <h2>Strong foundations. Lasting relationships.</h2>
+        <article id="about-us-content">
+          <p>We bring people, plans, and materials together to deliver construction projects with clear communication and attention to every detail. Integrity, quality craftsmanship, and respect for our clients guide every build.</p>
+        </article>
+        <button class="content-generate-button" type="button" aria-label="Generate About Us copy" data-content-type="about" data-target="about-us-content">
+          Generate About Us copy
+        </button>
+      </section>
+
+      <section class="home-services content-width">
+        <p class="eyebrow">How we can help</p>
+        <h2>Services for every stage of your project</h2>
+        <article id="services-content">
+          <p>From custom homes and commercial construction to renovations and remodeling, our team helps bring your plans to life.</p>
+        </article>
+        <button class="content-generate-button" type="button" aria-label="Generate Services copy" data-content-type="services" data-target="services-content">
+          Generate Services copy
+        </button>
+        <a class="button" href="services.html" aria-label="View all services">View all services</a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; 2026 BuildRight Construction. Built with care.</p>
+      <p><a href="mailto:hello@buildright.example" aria-label="hello@buildright.example">hello@buildright.example</a> | <a href="tel:+15550142800" aria-label="(555) 014-2800">(555) 014-2800</a></p>
+    </footer>
+    <section class="chatbot-panel" id="chatbot-panel" aria-label="BuildRight chat" hidden>
+      <header class="chatbot-header">
+        <hgroup>
+          <h2>BuildRight Assistant</h2>
+          <p>AI chat · Requires a secure Gemini proxy</p>
+        </hgroup>
+        <button class="chatbot-close" type="button" aria-label="Close BuildRight chat">&times;</button>
+      </header>
+      <div class="chatbot-messages" id="chatbot-messages" aria-live="polite" aria-relevant="additions">
+        <p class="chat-message chat-message--assistant">Hello! How can I help you with your construction project?</p>
+      </div>
+      <form class="chatbot-input" id="chatbot-form">
+        <label class="visually-hidden" for="chatbot-message-input">Your message</label>
+        <input id="chatbot-message-input" name="message" type="text" placeholder="Type a message..." autocomplete="off" required>
+        <button type="submit" aria-label="Send chat message">Send</button>
+      </form>
+    </section>
+    <button class="chatbot-toggle" type="button" aria-label="Open BuildRight chat" aria-controls="chatbot-panel" aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5 8 8 0 0 1-3.4-.8L4 20l1.5-4A7.5 7.5 0 1 1 20 11.5Z"></path>
+      </svg>
+    </button>
+    <script>
+      const GEMINI_API_URL = "/api/gemini";
+      const ABOUT_US_PROMPT = "Write a professional About Us section for BuildRight Construction, a construction company. Use a warm, confident, trustworthy tone that feels human and clear rather than exaggerated or sales-heavy. Emphasize integrity, quality craftsmanship, clear communication, dependable project delivery, respect for clients, and creating durable spaces for homes and businesses. Write 2 concise paragraphs, avoid unsupported claims such as years in business, awards, licenses, or project counts, and return plain text only.";
+      const SERVICES_PROMPT = "Generate a bulleted list of core services for BuildRight Construction, a construction company. Include residential construction, commercial construction, and renovations and remodeling, with a concise plain-language description for each. Use only a bulleted list (one service per bullet), do not add an introduction or conclusion, and avoid unsupported claims.";
+
+      async function callGemini(prompt, history = []) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 15000);
+
+        try {
+          const response = await fetch(GEMINI_API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt, history }),
+            signal: controller.signal,
+          });
+
+          if (!response.ok) {
+            throw new Error(`Gemini proxy request failed (${response.status}).`);
+          }
+
+          const result = await response.json();
+
+          if (typeof result.text !== "string" || !result.text.trim()) {
+            throw new Error("Gemini proxy returned an empty or invalid response.");
+          }
+
+          return result.text.trim();
+        } finally {
+          clearTimeout(timeout);
+        }
+      }
+
+      function setupMobileNavigation() {
+        const menuToggle = document.querySelector(".menu-toggle");
+        const navigation = document.querySelector("#main-navigation");
+
+        function toggleNavigation() {
+          const isOpen = navigation.classList.toggle("is-open");
+          menuToggle.setAttribute("aria-expanded", isOpen);
+        }
+
+        menuToggle.addEventListener("click", toggleNavigation);
+      }
+
+      setupMobileNavigation();
+
+      function setupChatbot() {
+        const toggle = document.querySelector(".chatbot-toggle");
+        const panel = document.querySelector("#chatbot-panel");
+        const close = document.querySelector(".chatbot-close");
+        const form = document.querySelector("#chatbot-form");
+        const input = document.querySelector("#chatbot-message-input");
+        const messages = document.querySelector("#chatbot-messages");
+        const chatHistory = [
+          {
+            role: "model",
+            text: "Hello! How can I help you with your construction project?",
+          },
+        ];
+
+        function setChatOpen(isOpen) {
+          panel.hidden = !isOpen;
+          toggle.setAttribute("aria-expanded", isOpen);
+          toggle.setAttribute("aria-label", isOpen ? "Close chat" : "Open chat");
+
+          if (isOpen) {
+            input.focus();
+          } else {
+            toggle.focus();
+          }
+        }
+
+        function appendMessage(text, role) {
+          const message = document.createElement("p");
+          message.className = `chat-message chat-message--${role}`;
+          message.textContent = text;
+          messages.append(message);
+          messages.scrollTop = messages.scrollHeight;
+          return message;
+        }
+
+        toggle.addEventListener("click", () => setChatOpen(panel.hidden));
+        close.addEventListener("click", () => setChatOpen(false));
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const message = input.value.trim();
+
+          if (!message || form.dataset.pending === "true") {
+            return;
+          }
+
+          appendMessage(message, "user");
+          chatHistory.push({ role: "user", text: message });
+          input.value = "";
+          form.dataset.pending = "true";
+          form.querySelector("button[type='submit']").disabled = true;
+
+          const typing = document.createElement("div");
+          typing.className = "chat-typing";
+          typing.setAttribute("role", "status");
+          typing.setAttribute("aria-label", "Assistant is typing");
+          typing.innerHTML = "<span></span><span></span><span></span>";
+          messages.append(typing);
+          messages.scrollTop = messages.scrollHeight;
+
+          callGemini(message, chatHistory)
+            .then((reply) => {
+              chatHistory.push({ role: "model", text: reply });
+              appendMessage(reply, "assistant");
+            })
+            .catch(() => {
+              appendMessage("Sorry, I couldn't reach the assistant right now. Please try again or contact our team.", "assistant");
+            })
+            .finally(() => {
+              typing.remove();
+              form.dataset.pending = "false";
+              form.querySelector("button[type='submit']").disabled = false;
+              input.focus();
+            });
+        });
+      }
+
+      setupChatbot();
+
+      function renderGeneratedContent(contentType, generatedText, target) {
+        if (contentType === "services") {
+          const lines = generatedText.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+          const bulletItems = lines.map((line) => line.match(/^(?:[-*•]|\d+[.)])\s+(.+)$/)?.[1]);
+
+          if (bulletItems.length > 0 && bulletItems.every(Boolean)) {
+            const list = document.createElement("ul");
+            list.className = "generated-service-list";
+            bulletItems.forEach((text) => {
+              const item = document.createElement("li");
+              item.textContent = text;
+              list.append(item);
+            });
+            target.replaceChildren(list);
+            return;
+          }
+        }
+
+        const paragraphs = generatedText.split(/\n{2,}/).map((text) => text.trim()).filter(Boolean);
+        target.replaceChildren(...paragraphs.map((text) => {
+          const paragraph = document.createElement("p");
+          paragraph.textContent = text;
+          return paragraph;
+        }));
+      }
+
+      async function generateContent(contentType, target, button) {
+        const originalLabel = button.textContent;
+        const originalContent = target.innerHTML;
+        button.disabled = true;
+        button.textContent = "Generating...";
+        target.setAttribute("aria-busy", "true");
+        target.classList.add("content-loading");
+        target.textContent = `Loading ${contentType === "about" ? "About Us" : "services"}...`;
+
+        try {
+          const prompt = contentType === "about" ? ABOUT_US_PROMPT : SERVICES_PROMPT;
+          const generatedText = await callGemini(prompt);
+          renderGeneratedContent(contentType, generatedText, target);
+        } catch {
+          target.innerHTML = originalContent;
+          const errorMessage = document.createElement("p");
+          errorMessage.className = "content-generation-error";
+          errorMessage.setAttribute("role", "alert");
+          errorMessage.textContent = "Unable to load generated content right now. The saved copy is shown instead.";
+          target.append(errorMessage);
+        } finally {
+          button.disabled = false;
+          button.textContent = originalLabel;
+          target.removeAttribute("aria-busy");
+          target.classList.remove("content-loading");
+        }
+      }
+
+      document.querySelectorAll(".content-generate-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = document.getElementById(button.dataset.target);
+          generateContent(button.dataset.contentType, target, button);
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".content-generate-button").forEach((button) => {
+          const target = document.getElementById(button.dataset.target);
+          generateContent(button.dataset.contentType, target, button);
+        });
+      });
+    </script>
+  </body>
+</html>
